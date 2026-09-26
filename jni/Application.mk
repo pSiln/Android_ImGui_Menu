@@ -1,0 +1,7 @@
+APP_ABI := arm64-v8a
+APP_STL := c++_static
+APP_OPTIM := release
+APP_THIN_ARCHIVE := true
+APP_PIE 		:= true
+APP_PLATFORM := android-25
+APP_CPPFLAGS += -D_LIBCPP_PROVIDES_DEFAULT_RUNE_TABLE

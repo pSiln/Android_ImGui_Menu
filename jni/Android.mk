@@ -1,0 +1,72 @@
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+
+# KittyMemory
+KITTYMEMORY_PATH = KittyMemory
+include $(CLEAR_VARS)
+LOCAL_MODULE    := Keystone
+LOCAL_SRC_FILES := $(KITTYMEMORY_PATH)/Deps/Keystone/libs-android/$(TARGET_ARCH_ABI)/libkeystone.a
+include $(PREBUILT_STATIC_LIBRARY)
+
+# Dobby
+include $(CLEAR_VARS)
+LOCAL_MODULE := Dobby
+LOCAL_SRC_FILES := Dobby/${TARGET_ARCH_ABI}/libdobby.a
+include $(PREBUILT_STATIC_LIBRARY)
+
+# Here is the name of your lib.
+# When you change the lib name, change also on System.loadLibrary("") under OnCreate method on StaticActivity.java
+# Both must have same name
+include $(CLEAR_VARS)
+LOCAL_MODULE    := MyLibName
+
+# -std=c++17 is required to support AIDE app with NDK
+LOCAL_CFLAGS := -w -s -Wno-error=format-security -fvisibility=hidden -fpermissive -fexceptions
+LOCAL_CPPFLAGS := -w -s -Wno-error=format-security -fvisibility=hidden -Werror -std=c++20
+LOCAL_CPPFLAGS += -Wno-error=c++11-narrowing -fpermissive -Wall -fexceptions
+LOCAL_LDFLAGS += -Wl,--gc-sections,--strip-all,-llog
+LOCAL_LDLIBS := -llog -landroid -ldl -lEGL -lGLESv2
+LOCAL_ARM_MODE := arm
+
+LOCAL_C_INCLUDES += $(LOCAL_PATH)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/Includes/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/Dobby/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/xDL/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/ImGuiOverlay/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/ImGuiOverlay/imgui
+
+# Here you add the cpp file to compile
+LOCAL_SRC_FILES := Main.cpp \
+    Menu/Jni.cpp \
+    Menu/Menu.cpp \
+    Menu/Setup.cpp \
+    Includes/Utils.cpp \
+	KittyMemory/KittyAsm.cpp \
+	KittyMemory/KittyIOFile.cpp \
+    KittyMemory/KittyMemory.cpp \
+    KittyMemory/KittyPtrValidator.cpp \
+    KittyMemory/KittyScanner.cpp \
+    KittyMemory/KittyUtils.cpp \
+    KittyMemory/MemoryBackup.cpp \
+    KittyMemory/MemoryPatch.cpp \
+	xDL/xdl.c \
+	xDL/xdl_iterate.c \
+	xDL/xdl_linker.c \
+	xDL/xdl_lzma.c \
+	xDL/xdl_util.c \
+    ImGuiOverlay/OverlayRenderer.cpp \
+    ImGuiOverlay/MenuUI.cpp \
+    ImGuiOverlay/JNI_Bridge.cpp \
+    ImGuiOverlay/OverlayHost.cpp \
+    ImGuiOverlay/NativeOverlay.cpp \
+    ImGuiOverlay/InputHook.cpp \
+    ImGuiOverlay/BridgeAPI.cpp \
+    ImGuiOverlay/imgui/imgui.cpp \
+    ImGuiOverlay/imgui/imgui_draw.cpp \
+    ImGuiOverlay/imgui/imgui_tables.cpp \
+    ImGuiOverlay/imgui/imgui_widgets.cpp \
+    ImGuiOverlay/imgui/backends/imgui_impl_opengl3.cpp
+    
+LOCAL_STATIC_LIBRARIES := Keystone Dobby
+
+include $(BUILD_SHARED_LIBRARY)
